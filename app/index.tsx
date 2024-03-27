@@ -1,21 +1,40 @@
-import { useSession } from '@/components/auth/authProvider'
-import { router } from 'expo-router'
-import React from 'react'
-import { ActivityIndicator, Button, Text, View } from 'react-native'
+import { useSession } from "@/components/auth/authProvider"
+import React from "react"
+import { ActivityIndicator, Button, Text, TextInput, View } from "react-native"
 
 export default function App() {
     const { signIn, loading } = useSession()
     if (loading) {
-        return <ActivityIndicator />
+        return (
+            <View>
+                <ActivityIndicator />
+            </View>
+        )
     }
+    const [userState, setUserState] = React.useState({
+        email: "",
+        password: "",
+    })
+
     return (
         <View>
             <Text>Hello expo!</Text>
+            <TextInput
+                value={userState.email}
+                onChangeText={(e) => setUserState({ ...userState, email: e })}
+                placeholder="Email"
+            />
+            <TextInput
+                value={userState.password}
+                onChangeText={(e) =>
+                    setUserState({ ...userState, password: e })
+                }
+                placeholder="Password"
+            />
             <Button
-                title="log me in nigga"
+                title="Login"
                 onPress={() => {
-                    signIn()
-                    router.replace('/home')
+                    signIn(userState.email, userState.password)
                 }}
             ></Button>
         </View>
