@@ -1,8 +1,20 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 import cmsRequest from "@/utils/fetchUtils"
 import { router } from "expo-router"
 import { AxiosError, isAxiosError } from "axios"
+import * as Device from "expo-device"
+import * as Notifications from "expo-notifications"
+import Constants from "expo-constants"
+import { Platform } from "react-native"
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+})
 
 export type User = {
     email: string
@@ -20,12 +32,16 @@ const AuthContext = React.createContext<{
         password: string,
         setError: (e: string) => void
     ) => Promise<void> | null
+    registerDevicePushTokenAsync: () => Promise<void> | null
+    registerForPushNotificationsAsync: () => Promise<string> | null
     session: User | null
     loading: boolean
 }>({
     signIn: () => null,
     signOut: () => null,
     signUp: () => null,
+    registerDevicePushTokenAsync: () => null,
+    registerForPushNotificationsAsync: () => null,
     session: null,
     loading: true,
 })
@@ -47,6 +63,74 @@ export function useSession() {
 export function SessionProvider(props: React.PropsWithChildren) {
     const [session, setSession] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
+
+    /**
+     * Resets session state, resets token, and navigates to login
+     * */
+    const resetSession = () => {
+        SecureStore.setItem("payload-token", "")
+        setSession(null)
+        router.replace("/")
+    }
+
+    /**
+     * Handles setting the user's push token
+     */
+    async function registerDevicePushTokenAsync() {
+        if (session) {
+            const expoPushToken = await registerForPushNotificationsAsync()
+            if (expoPushToken) {
+                try {
+                    await cmsRequest({
+                        path: "/api/public-users/setExpoPushToken",
+                        method: "POST",
+                        body: { expoPushToken },
+                    })
+                } catch (error) {
+                    console.error("Failed to set expo push token", error)
+                    resetSession()
+                }
+            }
+        }
+    }
+
+    /**
+     * Handles getting the user's push token, handles permissions etc
+     */
+    async function registerForPushNotificationsAsync(): Promise<string> {
+        let token
+
+        if (Platform.OS === "android") {
+            Notifications.setNotificationChannelAsync("default", {
+                name: "default",
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: "#FF231F7C",
+            })
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } =
+                await Notifications.getPermissionsAsync()
+            let finalStatus = existingStatus
+            if (existingStatus !== "granted") {
+                const { status } = await Notifications.requestPermissionsAsync()
+                finalStatus = status
+            }
+            if (finalStatus !== "granted") {
+                alert("Failed to get push token for push notification!")
+                return ""
+            }
+            token = await Notifications.getExpoPushTokenAsync({
+                projectId: Constants?.expoConfig?.extra?.eas.projectId,
+            })
+        } else {
+            alert("Must use physical device for Push Notifications")
+            return ""
+        }
+
+        return token.data
+    }
 
     useEffect(() => {
         const getToken = async () => {
@@ -77,14 +161,17 @@ export function SessionProvider(props: React.PropsWithChildren) {
                     router.replace("/home")
                 } catch (error) {
                     console.error("Error while fetching user", error)
-                    SecureStore.setItem("payload-token", "")
-                    setSession(null)
-                    router.replace("/")
+                    resetSession()
                 }
             }
             setLoading(false)
         }
         getToken()
+
+        const subscription = Notifications.addPushTokenListener(
+            registerDevicePushTokenAsync
+        )
+        return () => subscription.remove()
     }, [])
 
     return (
@@ -142,7 +229,6 @@ export function SessionProvider(props: React.PropsWithChildren) {
                             method: "POST",
                             body: { email, password },
                         })
-                        console.log(regRes.data)
                         const data = regRes.data
                         if (data.token && data.user && data.user.email) {
                             // store token and user email
@@ -162,6 +248,8 @@ export function SessionProvider(props: React.PropsWithChildren) {
                         console.error("Error during registration", error)
                     }
                 },
+                registerDevicePushTokenAsync,
+                registerForPushNotificationsAsync,
                 loading,
                 session,
             }}
