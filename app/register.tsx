@@ -1,47 +1,26 @@
 import { useSession } from "@/components/auth/authProvider"
 import { Colors } from "@/constants/Colors"
 import styles from "@/constants/styles"
-import { Link } from "expo-router"
-import React, { useEffect } from "react"
+import React from "react"
 import {
     ActivityIndicator,
     Text,
     TextInput,
     TouchableOpacity,
     View,
-    Animated,
-    Easing,
 } from "react-native"
-import Splash from "../assets/images/splash.svg"
 
-export default function App() {
-    const { signIn, loading } = useSession()
+export default function Register() {
+    const { signUp, loading } = useSession()
     const [userState, setUserState] = React.useState({
         email: "test@test.cz",
         password: "password",
+        error: null,
     })
 
-    const spinValue = new Animated.Value(0)
-    const rotate = spinValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: ["0deg", "-360deg"],
-    })
-
-    const spin = () => {
-        spinValue.setValue(0)
-        Animated.loop(
-            Animated.timing(spinValue, {
-                toValue: 1,
-                duration: 50000,
-                useNativeDriver: true,
-                easing: Easing.linear,
-            })
-        ).start()
+    const setError = (e: any) => {
+        setUserState({ ...userState, error: e })
     }
-
-    useEffect(() => {
-        spin()
-    }, [])
 
     if (loading) {
         return (
@@ -68,22 +47,24 @@ export default function App() {
                     width: "80%",
                 }}
             >
-                <Animated.View
-                    style={[
-                        {
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: 40,
-                        },
-                        { transform: [{ rotate: rotate }] },
-                    ]}
-                >
-                    <Splash width={200} height={200} />
-                </Animated.View>
+                {userState.error ? (
+                    <Text
+                        style={{
+                            padding: 10,
+                            color: Colors.text,
+                            backgroundColor: "red",
+                            marginVertical: 10,
+                            textAlign: "center",
+                            borderRadius: 5,
+                        }}
+                    >
+                        {userState.error}
+                    </Text>
+                ) : null}
                 <TextInput
                     value={userState.email}
                     onChangeText={(e) =>
-                        setUserState({ ...userState, email: e })
+                        setUserState({ ...userState, email: e, error: null })
                     }
                     placeholder="Email"
                     style={{
@@ -101,7 +82,7 @@ export default function App() {
                 <TextInput
                     value={userState.password}
                     onChangeText={(e) =>
-                        setUserState({ ...userState, password: e })
+                        setUserState({ ...userState, password: e, error: null })
                     }
                     placeholder="Password"
                     style={{
@@ -118,7 +99,7 @@ export default function App() {
                 />
                 <TouchableOpacity
                     onPress={() => {
-                        signIn(userState.email, userState.password)
+                        signUp(userState.email, userState.password, setError)
                     }}
                     style={{
                         padding: 15,
@@ -129,20 +110,8 @@ export default function App() {
                         borderRadius: 5,
                     }}
                 >
-                    <Text>Login</Text>
+                    <Text>Sign up</Text>
                 </TouchableOpacity>
-                <Text
-                    style={{
-                        marginVertical: 10,
-                        color: Colors.text,
-                        textAlign: "center",
-                    }}
-                >
-                    No account?{" "}
-                    <Link href="/register" style={{ color: Colors.button }}>
-                        Sign up
-                    </Link>
-                </Text>
             </View>
         </View>
     )

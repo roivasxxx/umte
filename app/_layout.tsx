@@ -1,10 +1,12 @@
-import { SessionProvider } from '@/components/auth/authProvider'
-import { Slot } from 'expo-router'
+import { SessionProvider } from "@/components/auth/authProvider"
+import { Colors } from "@/constants/Colors"
+import { Slot } from "expo-router"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function Root() {
-    // Set up the auth context and render our layout inside of it.
     return (
         <SessionProvider>
+            <SafeAreaView style={{ backgroundColor: Colors.background }} />
             <Slot />
         </SessionProvider>
     )

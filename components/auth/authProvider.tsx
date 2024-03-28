@@ -2,19 +2,26 @@ import React, { useEffect, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 import cmsRequest from "@/utils/fetchUtils"
 import { router } from "expo-router"
+import { AxiosError, isAxiosError } from "axios"
 
 export type User = {
     email: string
 }
 
 const AuthContext = React.createContext<{
-    signIn: (email: string, password: string) => void
-    signOut: () => void
+    signIn: (email: string, password: string) => Promise<void> | null
+    signOut: () => Promise<void> | null
+    signUp: (
+        email: string,
+        password: string,
+        setError: (e: string) => void
+    ) => Promise<void> | null
     session: User | null
     loading: boolean
 }>({
-    signIn: async () => null,
-    signOut: async () => null,
+    signIn: () => null,
+    signOut: () => null,
+    signUp: () => null,
     session: null,
     loading: true,
 })
@@ -34,27 +41,35 @@ export function useSession() {
 }
 
 export function SessionProvider(props: React.PropsWithChildren) {
-    //   const [[isLoading, session], setSession] = useStorageState('session');
     const [session, setSession] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const getToken = async () => {
+            // check if token exists
             const token = SecureStore.getItem("payload-token")
             if (token) {
                 try {
                     const res = await cmsRequest({
-                        path: "api/public-users/me",
-                        method: "GET",
+                        path: "api/public-users/refresh-token",
+                        method: "POST",
+                        body: {},
                     })
                     const data = res.data
-                    if (data.token && data.user && data.user.email) {
-                        // store this data only
-                        SecureStore.setItem("payload-token", data.token)
+                    if (data.refreshedToken && data.user && data.user.email) {
+                        // if the current token is valid, a new token will be returned by the api
+                        // save this new token and change the email - !! no need to actually change the email, change other props if necessary
+                        SecureStore.setItem(
+                            "payload-token",
+                            data.refreshedToken
+                        )
                         setSession({ email: data.user.email })
                     } else {
+                        // if the current token is invalid, throw error
+                        // this error will be caught and the user will be signed out and redirected to the login page
                         throw new Error("ME_ERROR")
                     }
+                    // redirect to home if token is valid
                     router.replace("/home")
                 } catch (error) {
                     console.error("Error while fetching user", error)
@@ -84,7 +99,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                         })
                         const data = res.data
                         if (data.token && data.user && data.user.email) {
-                            // store this data only
+                            // store token and user email
                             SecureStore.setItem("payload-token", data.token)
                             setSession({ email: data.user.email })
                             router.replace("/home")
@@ -106,6 +121,37 @@ export function SessionProvider(props: React.PropsWithChildren) {
                     }
                     setSession(null)
                     SecureStore.setItem("payload-token", "")
+                },
+                signUp: async (
+                    email: string,
+                    password: string,
+                    setError: (e: string) => void
+                ) => {
+                    try {
+                        const regRes = await cmsRequest({
+                            path: "api/public-users/register",
+                            method: "POST",
+                            body: { email, password },
+                        })
+                        console.log(regRes.data)
+                        const data = regRes.data
+                        if (data.token && data.user && data.user.email) {
+                            // store token and user email
+                            SecureStore.setItem("payload-token", data.token)
+                            setSession({ email: data.user.email })
+                            router.replace("/home")
+                        }
+                    } catch (error) {
+                        if (isAxiosError(error)) {
+                            const e = error as AxiosError
+                            if (e.response?.status === 400) {
+                                setError("Email already in use")
+                            } else {
+                                setError("Something went wrong")
+                            }
+                        }
+                        console.error("Error during registration", error)
+                    }
                 },
                 loading,
                 session,

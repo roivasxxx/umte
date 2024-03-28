@@ -1,6 +1,5 @@
-import { useSession } from '@/components/auth/authProvider'
-import { Redirect, Stack } from 'expo-router'
-import { Text, View } from 'react-native'
+import { useSession } from "@/components/auth/authProvider"
+import { Redirect, Stack } from "expo-router"
 
 export default function AppLayout() {
     const { session } = useSession()
@@ -10,8 +9,10 @@ export default function AppLayout() {
     }
 
     return (
-        <Stack>
-            <Stack.Screen name="home" options={{ headerShown: false }} />
-        </Stack>
+        <>
+            <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="home" options={{ headerShown: false }} />
+            </Stack>
+        </>
     )
 }
