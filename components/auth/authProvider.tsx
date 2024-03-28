@@ -9,7 +9,11 @@ export type User = {
 }
 
 const AuthContext = React.createContext<{
-    signIn: (email: string, password: string) => Promise<void> | null
+    signIn: (
+        email: string,
+        password: string,
+        setError: (e: string) => void
+    ) => Promise<void> | null
     signOut: () => Promise<void> | null
     signUp: (
         email: string,
@@ -86,7 +90,11 @@ export function SessionProvider(props: React.PropsWithChildren) {
     return (
         <AuthContext.Provider
             value={{
-                signIn: async (email: string, password: string) => {
+                signIn: async (
+                    email: string,
+                    password: string,
+                    setError: (e: string) => void
+                ) => {
                     try {
                         setLoading(true)
                         const res = await cmsRequest({
@@ -106,6 +114,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                         }
                     } catch (e) {
                         console.error("Error during login", e)
+                        setError("Something went wrong")
                     }
                     setLoading(false)
                 },
