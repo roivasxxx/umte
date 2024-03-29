@@ -2,7 +2,6 @@ import { ReactNode, useState } from "react"
 import { useSession } from "./authProvider"
 import { Text, TextInput, TouchableOpacity } from "react-native"
 import { Colors } from "@/constants/Colors"
-import { Link } from "expo-router"
 
 export default function LoginForm(props: {
     buttonText: "Sign in" | "Sign up"
@@ -23,7 +22,22 @@ export default function LoginForm(props: {
 
     return (
         <>
-            {userState.error ? <Text>{userState.error}</Text> : <></>}
+            {userState.error ? (
+                <Text
+                    style={{
+                        backgroundColor: "red",
+                        textAlign: "center",
+                        borderRadius: 5,
+                        padding: 10,
+                        color: Colors.text,
+                        marginVertical: 10,
+                    }}
+                >
+                    {userState.error}
+                </Text>
+            ) : (
+                <></>
+            )}
             <TextInput
                 value={userState.email}
                 onChangeText={(e) =>

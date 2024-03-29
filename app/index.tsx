@@ -57,6 +57,20 @@ export default function App() {
                             Sign up
                         </Link>
                     </Text>
+                    <Text
+                        style={{
+                            marginVertical: 10,
+                            color: Colors.text,
+                            textAlign: "center",
+                        }}
+                    >
+                        <Link
+                            href="/forgotten-password"
+                            style={{ color: Colors.button }}
+                        >
+                            Forgot your password?
+                        </Link>
+                    </Text>
                 </LoginForm>
             </View>
         </View>

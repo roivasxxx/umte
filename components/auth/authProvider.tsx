@@ -16,6 +16,7 @@ Notifications.setNotificationHandler({
     }),
 })
 
+// the data is not really needed, so just store something in the session
 export type User = {
     email: string
 }
@@ -32,6 +33,10 @@ const AuthContext = React.createContext<{
         password: string,
         setError: (e: string) => void
     ) => Promise<void> | null
+    forgotPassword: (
+        email: string,
+        setStatus: (e: string) => void
+    ) => Promise<void> | null
     registerDevicePushTokenAsync: () => Promise<void> | null
     registerForPushNotificationsAsync: () => Promise<string> | null
     session: User | null
@@ -40,6 +45,7 @@ const AuthContext = React.createContext<{
     signIn: () => null,
     signOut: () => null,
     signUp: () => null,
+    forgotPassword: () => null,
     registerDevicePushTokenAsync: () => null,
     registerForPushNotificationsAsync: () => null,
     session: null,
@@ -246,6 +252,22 @@ export function SessionProvider(props: React.PropsWithChildren) {
                             }
                         }
                         console.error("Error during registration", error)
+                    }
+                },
+                forgotPassword: async (
+                    email: string,
+                    setStatus: (e: string) => void
+                ) => {
+                    try {
+                        await cmsRequest({
+                            path: "api/public-users/forgot-password",
+                            method: "POST",
+                            body: { email },
+                        })
+                        setStatus("SUCCESS")
+                    } catch (error) {
+                        setStatus("ERROR")
+                        console.error("Error during forgot password", error)
                     }
                 },
                 registerDevicePushTokenAsync,
