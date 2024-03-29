@@ -1,7 +1,10 @@
 import { useSession } from "@/components/auth/authProvider"
-import { Redirect, Stack } from "expo-router"
+import { Redirect, Tabs } from "expo-router"
+import { Colors } from "@/constants/Colors"
 
-export default function AppLayout() {
+import { FontAwesome } from "@expo/vector-icons"
+import { Entypo } from "@expo/vector-icons"
+export default function AppTabLayout() {
     const { session } = useSession()
 
     if (!session) {
@@ -10,9 +13,53 @@ export default function AppLayout() {
 
     return (
         <>
-            <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="home" options={{ headerShown: false }} />
-            </Stack>
+            <Tabs
+                screenOptions={{
+                    headerShown: false,
+                    tabBarActiveTintColor: Colors.button,
+                    tabBarInactiveTintColor: Colors.text,
+                    tabBarStyle: {
+                        backgroundColor: Colors.background,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    },
+                    tabBarLabelStyle: {
+                        display: "none",
+                    },
+                }}
+            >
+                <Tabs.Screen
+                    name="home"
+                    options={{
+                        headerShown: false,
+                        tabBarIcon: ({ color }) => (
+                            <Entypo name="home" size={24} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="database"
+                    options={{
+                        headerShown: false,
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome
+                                name="database"
+                                size={24}
+                                color={color}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="account"
+                    options={{
+                        headerShown: false,
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome name="user" size={24} color={color} />
+                        ),
+                    }}
+                />
+            </Tabs>
         </>
     )
 }
