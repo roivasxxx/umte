@@ -4,7 +4,7 @@ import { ScrollView, Text, View } from "react-native"
 import { Colors } from "@/constants/Colors"
 import { BANNER_TYPE, WishInfo } from "@/types/types"
 import { Link } from "expo-router"
-
+import { FontAwesome } from "@expo/vector-icons"
 const BannerInfo = <T extends BANNER_TYPE>(props: {
     banner: T
     data: WishInfo[T]
@@ -34,28 +34,119 @@ const BannerInfo = <T extends BANNER_TYPE>(props: {
                     justifyContent: "space-between",
                 }}
             >
-                <View>
-                    <Text>{banner}</Text>
-                    <Text>Last 4 star: {last4Star} </Text>
-                    <Text>Pity 4 star: {pity4Star} </Text>
-                    <Text>Last 5 star: {last5Star} </Text>
-                    <Text>Pity 5 star: {pity5Star} </Text>
-                    <Text>Pull Count: {pullCount} </Text>
+                <View style={{ flex: 15 }}>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: Colors.text,
+                                fontWeight: "bold",
+                                fontSize: 14,
+                            }}
+                        >
+                            {banner}
+                        </Text>
+                        <Link
+                            href={{
+                                pathname: "/(app)/account/history/[banner]",
+                                params: { accountId: props.accountId, banner },
+                            }}
+                            style={{
+                                textAlignVertical: "center",
+                                textAlign: "center",
+                                color: Colors.button,
+                                padding: 5,
+                            }}
+                        >
+                            <FontAwesome
+                                name="history"
+                                size={24}
+                                color={Colors.button}
+                            />
+                        </Link>
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: Colors.background,
+                            padding: 10,
+                            marginVertical: 5,
+                            alignItems: "center",
+                            borderRadius: 10,
+                            width: "100%",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text style={{ color: Colors.textSecondary }}>
+                            {"Last 4 \u2605 "}
+                        </Text>
+                        <Text style={{ color: Colors.fourStar }}>
+                            {last4Star}
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: Colors.background,
+                            padding: 10,
+                            marginVertical: 5,
+                            alignItems: "center",
+                            borderRadius: 10,
+                            width: "100%",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text style={{ color: Colors.textSecondary }}>
+                            {"Pity 4 \u2605 "}
+                        </Text>
+                        <Text style={{ color: Colors.fourStar }}>
+                            {pity4Star}
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: Colors.background,
+                            padding: 10,
+                            marginVertical: 5,
+                            alignItems: "center",
+                            borderRadius: 10,
+                            width: "100%",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text style={{ color: Colors.textSecondary }}>
+                            {"Last 5 \u2605 "}
+                        </Text>
+                        <Text style={{ color: Colors.fiveStar }}>
+                            {last5Star}
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: Colors.background,
+                            padding: 10,
+                            marginVertical: 5,
+                            alignItems: "center",
+                            borderRadius: 10,
+                            width: "100%",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text style={{ color: Colors.textSecondary }}>
+                            Pull Count:
+                        </Text>
+                        <Text style={{ color: Colors.textSecondary }}>
+                            {pullCount}
+                        </Text>
+                    </View>
                 </View>
-                <Link
-                    href={{
-                        pathname: "/(app)/account/history/[banner]",
-                        params: { accountId: props.accountId, banner },
-                    }}
-                    style={{
-                        alignItems: "center",
-                        padding: 5,
-                        textAlignVertical: "center",
-                        color: Colors.button,
-                    }}
-                >
-                    View History
-                </Link>
             </View>
         </View>
     )
