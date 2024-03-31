@@ -1,29 +1,43 @@
-export type WishInfo = {
-    standard: {
-        pullCount: number
-        last4Star?: (string | null) | GenshinWish
-        last5Star?: (string | null) | GenshinWish
-        pity4Star: number
-        pity5Star: number
-        lastId?: string | null
-    }
-    weapon: {
-        pullCount: number
-        last4Star?: (string | null) | GenshinWish
-        last5Star?: (string | null) | GenshinWish
-        pity4Star: number
-        pity5Star: number
-        lastId?: string | null
-    }
-    character: {
-        pullCount: number
-        last4Star?: (string | null) | GenshinWish
-        last5Star?: (string | null) | GenshinWish
-        pity4Star: number
-        pity5Star: number
-        lastId?: string | null
-    }
-    lastUpdate?: string | null
+export type Dictionary = {
+    [key: string]: string | number | boolean
+}
+
+export interface Info {
+    wishInfo: WishInfo
+    accountId: string
+}
+export interface WishInfo {
+    standard: BannerInfo
+    character: BannerInfo
+    weapon: BannerInfo
+}
+export interface BannerInfo {
+    pullCount: number
+    last4Star: string | null
+    last5Star: string | null
+    pity4Star: number
+    pity5Star: number
+    lastId: string | null
+}
+
+export interface Wish {
+    id: string
+    date: string
+    rarity: number
+    hoyoId: string
+    pity: number
+    bannerType: string
+    wishNumber: number
+    item: Item
+}
+export interface Item {
+    icon: Icon
+    value: string
+}
+export interface Icon {
+    alt: string
+    url: string
+    originalName: string
 }
 
 export interface GenshinWish {
@@ -44,10 +58,12 @@ export type RequestUtilsBody =
     | {
           body: object
           method: "POST" | "PATCH" | "PUT"
+          params?: undefined | null
       }
     | {
           body?: undefined | null
           method: "GET" | "DELETE"
+          params?: Dictionary
       }
 
 export enum BANNER_TYPE {

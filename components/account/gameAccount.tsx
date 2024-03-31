@@ -11,7 +11,6 @@ const BannerInfo = <T extends BANNER_TYPE>(props: {
     accountId: string
 }) => {
     const banner = props.banner[0].toUpperCase() + props.banner.slice(1)
-
     const last4Star =
         typeof props.data.last4Star === "string" ? props.data.last4Star : "None"
     const last5Star =
@@ -19,6 +18,7 @@ const BannerInfo = <T extends BANNER_TYPE>(props: {
     const pity4Star = props.data.pity4Star || 0
     const pity5Star = props.data.pity5Star || 0
     const pullCount = props.data.pullCount || 0
+
     return (
         <View
             style={{
@@ -140,7 +140,26 @@ const BannerInfo = <T extends BANNER_TYPE>(props: {
                         }}
                     >
                         <Text style={{ color: Colors.textSecondary }}>
-                            Pull Count:
+                            {"Pity 5 \u2605 "}
+                        </Text>
+                        <Text style={{ color: Colors.fiveStar }}>
+                            {pity5Star}
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: Colors.background,
+                            padding: 10,
+                            marginVertical: 5,
+                            alignItems: "center",
+                            borderRadius: 10,
+                            width: "100%",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text style={{ color: Colors.textSecondary }}>
+                            Pull Count
                         </Text>
                         <Text style={{ color: Colors.textSecondary }}>
                             {pullCount}
@@ -155,10 +174,8 @@ const BannerInfo = <T extends BANNER_TYPE>(props: {
 export default function GameAccount(props: { resource: ResourceType }) {
     const res = props.resource.read()
     const data = res?.data
-
     const wishInfo: WishInfo = data.wishInfo
     const accountId = data.accountId
-
     return (
         <ScrollView
             style={{

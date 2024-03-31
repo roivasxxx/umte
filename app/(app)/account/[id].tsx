@@ -12,8 +12,9 @@ export default function Account() {
 
     const resource = createResource(
         cmsRequest({
-            path: `api/${game}-accounts/${id}`,
+            path: `api/${game}-accounts/getAccount`,
             method: "GET",
+            params: { accountId: typeof id === "string" ? id : id[0] },
         })
     )
 

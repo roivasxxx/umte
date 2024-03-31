@@ -3,23 +3,30 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import * as SecureStore from "expo-secure-store"
 
 export default async function cmsRequest(
-    params: {
+    fetchParams: {
         path: string
         abortController?: AbortController
         headers?: Record<string, string>
     } & RequestUtilsBody
 ) {
-    const { path, abortController, body, headers } = params
+    const { path, abortController, body, headers, method, params } = fetchParams
 
-    const _path =
+    const url = new URL(
         process.env.EXPO_PUBLIC_BACKEND_URL +
-        (path[0] === "/" ? path : "/" + path)
+            (path[0] === "/" ? path : "/" + path)
+    )
+
+    if (method === "GET" && params) {
+        Object.keys(params).forEach((key) => {
+            url.searchParams.append(key, String(params[key]))
+        })
+    }
 
     const fetchOptions: AxiosRequestConfig = {
-        method: params.method,
+        method,
         withCredentials: true,
         headers: {},
-        url: _path,
+        url: url.href,
     }
 
     const token = SecureStore.getItem("payload-token")
@@ -35,7 +42,10 @@ export default async function cmsRequest(
         fetchOptions.signal = abortController.signal
     }
     if (headers) {
-        fetchOptions.headers = { ...fetchOptions.headers, ...params.headers }
+        fetchOptions.headers = {
+            ...fetchOptions.headers,
+            ...fetchParams.headers,
+        }
     }
 
     return await axios(fetchOptions)

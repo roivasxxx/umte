@@ -35,6 +35,7 @@ export default function AccountProvider(props: { children: ReactNode }) {
             const res = await cmsRequest({
                 path: "api/public-users/me",
                 method: "GET",
+                params: {},
             })
             const data = res.data
             if (data && data.user) {
