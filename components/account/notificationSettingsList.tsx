@@ -3,6 +3,7 @@ import { useAccount } from "./accountProvider"
 import { Colors } from "@/constants/Colors"
 import NotificationCheckbox from "./notificationCheckbox"
 import SpinningLogo from "../spinningLogo"
+import { Link } from "expo-router"
 
 export default function NotificationSettingsList() {
     const {
@@ -34,6 +35,9 @@ export default function NotificationSettingsList() {
                         text="Events"
                         prop="events"
                     />
+                    <Link href="/(app)/account/item-notifications">
+                        <Text>Items</Text>
+                    </Link>
                 </>
             )}
         </View>

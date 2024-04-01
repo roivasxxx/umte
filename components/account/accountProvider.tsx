@@ -25,7 +25,7 @@ type AccountContext = {
         | (<T extends keyof GenshinAccountState["notifications"]>(
               prop: T,
               value: GenshinAccountState["notifications"][T]
-          ) => Promise<void>)
+          ) => Promise<boolean>)
         | null
     createGenshinAccount:
         | ((acc: {
@@ -130,9 +130,11 @@ export default function AccountProvider(props: { children: ReactNode }) {
                     items: _account.notifications.items.map((el) => el.id),
                 },
             })
+            return true
         } catch (error) {
             console.error("Error setting notifications", error)
         }
+        return false
     }
     const createGenshinAccount = async (acc: {
         region: ACCOUNT_REGIONS

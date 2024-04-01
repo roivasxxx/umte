@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { Animated, Easing } from "react-native"
 import Splash from "../assets/images/splash.svg"
 
-export default function SpinningLogo() {
+export default function SpinningLogo({ width = 200, height = 200 }) {
     const spinValue = new Animated.Value(0)
     const rotate = spinValue.interpolate({
         inputRange: [0, 1],
@@ -36,7 +36,7 @@ export default function SpinningLogo() {
                 { transform: [{ rotate: rotate }] },
             ]}
         >
-            <Splash width={200} height={200} />
+            <Splash width={width} height={height} />
         </Animated.View>
     )
 }
