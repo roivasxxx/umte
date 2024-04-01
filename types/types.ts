@@ -71,3 +71,17 @@ export enum BANNER_TYPE {
     WEAPON = "weapon",
     STANDARD = "standard",
 }
+
+export type NotificationItemType = {
+    name: string
+    id: string
+    icon?: string
+    days: string[]
+}
+
+export enum ACCOUNT_REGIONS {
+    "os_euro" = "Europe",
+    "os_asia" = "Asia",
+    "os_usa" = "America",
+    "os_cht" = "China",
+}

@@ -3,17 +3,38 @@ import { useAccount } from "./accountProvider"
 import { Colors } from "@/constants/Colors"
 import { Link } from "expo-router"
 import { GAME_ICONS } from "@/utils/imageUtils"
-
+import SpinningLogo from "../spinningLogo"
+import { AntDesign } from "@expo/vector-icons"
 export default function AccountList() {
     const { account } = useAccount()
 
     return (
-        <>
-            <Text
-                style={{ color: Colors.text, fontWeight: "bold", fontSize: 18 }}
+        <View style={{ flex: 1 }}>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingVertical: 15,
+                }}
             >
-                Accounts
-            </Text>
+                <Text
+                    style={{
+                        color: Colors.text,
+                        fontWeight: "bold",
+                        fontSize: 18,
+                    }}
+                >
+                    Accounts
+                </Text>
+                <Link href="/(app)/account/new">
+                    <AntDesign
+                        name="pluscircle"
+                        size={26}
+                        color={Colors.button}
+                    />
+                </Link>
+            </View>
             <FlatList
                 data={account.genshinAccounts}
                 renderItem={({ item }) => {
@@ -34,6 +55,7 @@ export default function AccountList() {
                                     region: item.region || "",
                                 },
                             }}
+                            key={item.id}
                         >
                             <View
                                 style={{
@@ -66,7 +88,21 @@ export default function AccountList() {
                         </Link>
                     )
                 }}
+                ListEmptyComponent={() => {
+                    return account.loading ? (
+                        <SpinningLogo />
+                    ) : (
+                        <Text
+                            style={{
+                                color: Colors.textSecondary,
+                                fontSize: 18,
+                            }}
+                        >
+                            {"No Accounts :("}
+                        </Text>
+                    )
+                }}
             />
-        </>
+        </View>
     )
 }

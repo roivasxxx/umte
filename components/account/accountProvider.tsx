@@ -1,3 +1,4 @@
+import { ACCOUNT_REGIONS, NotificationItemType } from "@/types/types"
 import cmsRequest from "@/utils/fetchUtils"
 import { createDeepCopy } from "@/utils/utils"
 import {
@@ -10,18 +11,44 @@ import {
 
 type GenshinAccountState = {
     genshinAccounts: any[]
+    notifications: {
+        events: boolean
+        banners: boolean
+        items: NotificationItemType[]
+    }
+    loading: boolean
 }
 
 type AccountContext = {
     account: GenshinAccountState
+    setNotifications:
+        | (<T extends keyof GenshinAccountState["notifications"]>(
+              prop: T,
+              value: GenshinAccountState["notifications"][T]
+          ) => Promise<void>)
+        | null
+    createGenshinAccount:
+        | ((acc: {
+              region: ACCOUNT_REGIONS
+              hoyoId: string
+          }) => Promise<string>)
+        | null
 }
 
 const defaultAccountState: GenshinAccountState = {
     genshinAccounts: [],
+    notifications: {
+        events: false,
+        banners: false,
+        items: [],
+    },
+    loading: true,
 }
 
 const AccountContext = createContext<AccountContext>({
     account: defaultAccountState,
+    setNotifications: null,
+    createGenshinAccount: null,
 })
 
 export const useAccount = () => useContext(AccountContext)
@@ -31,6 +58,7 @@ export default function AccountProvider(props: { children: ReactNode }) {
         useState<GenshinAccountState>(defaultAccountState)
 
     async function getAccountData() {
+        const _account = createDeepCopy(defaultAccountState)
         try {
             const res = await cmsRequest({
                 path: "api/public-users/me",
@@ -39,8 +67,6 @@ export default function AccountProvider(props: { children: ReactNode }) {
             })
             const data = res.data
             if (data && data.user) {
-                console.log(data.user.genshinAccounts)
-                const _account = createDeepCopy(defaultAccountState)
                 if (
                     data.user.genshinAccounts &&
                     Array.isArray(data.user.genshinAccounts) &&
@@ -55,20 +81,86 @@ export default function AccountProvider(props: { children: ReactNode }) {
                         })
                     )
                 }
-
-                setAccount(_account)
+                if (data.user.tracking) {
+                    _account.notifications = {
+                        ...data.user.tracking,
+                        items: data.user.tracking.items
+                            ? data.user.tracking.items.map((el: any) => {
+                                  return {
+                                      name: el.name,
+                                      id: el.id,
+                                      icon: el.icon.cloudinary.secure_url,
+                                      days: el.days,
+                                  }
+                              })
+                            : [],
+                    }
+                }
             }
         } catch (error) {
             console.error("Error getting account data", error)
         }
+        setAccount({ ..._account, loading: false })
     }
 
     useEffect(() => {
         getAccountData()
     }, [])
 
+    const setNotifications = async <
+        T extends keyof GenshinAccountState["notifications"]
+    >(
+        prop: T,
+        value: GenshinAccountState["notifications"][T]
+    ) => {
+        const _account: GenshinAccountState = {
+            ...account,
+            notifications: {
+                ...account.notifications,
+                [prop]: value,
+            },
+        }
+        setAccount(_account)
+        try {
+            await cmsRequest({
+                path: "api/public-users/setNotificationSettings",
+                method: "POST",
+                body: {
+                    ..._account.notifications,
+                    items: _account.notifications.items.map((el) => el.id),
+                },
+            })
+        } catch (error) {
+            console.error("Error setting notifications", error)
+        }
+    }
+    const createGenshinAccount = async (acc: {
+        region: ACCOUNT_REGIONS
+        hoyoId: string
+    }) => {
+        try {
+            console.log(acc)
+            const response = await cmsRequest({
+                path: "api/genshin-accounts/create-genshin-account",
+                method: "POST",
+                body: {
+                    ...acc,
+                },
+            })
+            if (response.data.accountId) {
+                await getAccountData()
+                return response.data.accountId as string
+            }
+        } catch (error) {
+            console.error("Error creating genshin account", error)
+        }
+        return ""
+    }
+
     return (
-        <AccountContext.Provider value={{ account }}>
+        <AccountContext.Provider
+            value={{ account, setNotifications, createGenshinAccount }}
+        >
             {props.children}
         </AccountContext.Provider>
     )

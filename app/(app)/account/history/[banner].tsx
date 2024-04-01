@@ -29,6 +29,7 @@ export default function History() {
     })
 
     const abortController = useRef<AbortController | null>(null)
+
     const getHistory = async () => {
         if (listState.hasMore && !listState.loading) {
             setListState((state) => ({
@@ -117,7 +118,6 @@ export default function History() {
                                 minHeight: 70,
                                 width: "90%",
                                 position: "relative",
-                                // padding: 10,
                             }}
                         >
                             <View
