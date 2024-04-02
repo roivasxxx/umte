@@ -4,7 +4,6 @@ import { Colors } from "@/constants/Colors"
 import { itemTypeLabels } from "@/utils/constants"
 import cmsRequest from "@/utils/fetchUtils"
 import { router } from "expo-router"
-import { setItem } from "expo-secure-store"
 import { memo, useDeferredValue, useEffect, useMemo, useState } from "react"
 import {
     Alert,

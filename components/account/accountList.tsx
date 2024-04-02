@@ -1,10 +1,10 @@
-import { FlatList, Image, SectionList, Text, View } from "react-native"
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native"
 import { useAccount } from "./accountProvider"
 import { Colors } from "@/constants/Colors"
-import { Link } from "expo-router"
+import { Link, router } from "expo-router"
 import { GAME_ICONS } from "@/utils/imageUtils"
 import SpinningLogo from "../spinningLogo"
-import { AntDesign } from "@expo/vector-icons"
+import { AntDesign, SimpleLineIcons } from "@expo/vector-icons"
 export default function AccountList() {
     const { account } = useAccount()
 
@@ -39,22 +39,27 @@ export default function AccountList() {
                 data={account.genshinAccounts}
                 renderItem={({ item }) => {
                     return (
-                        <Link
+                        <TouchableOpacity
                             style={{
                                 padding: 15,
                                 backgroundColor: Colors.content,
                                 borderRadius: 5,
                                 marginVertical: 5,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
                             }}
-                            href={{
-                                pathname: `/(app)/account/[id]`,
-                                params: {
-                                    id: item.id,
-                                    game: item.game,
-                                    hoyoId: item.hoyoId || "",
-                                    region: item.region || "",
-                                },
-                            }}
+                            onPress={() =>
+                                router.push({
+                                    pathname: `/(app)/account/[id]`,
+                                    params: {
+                                        id: item.id,
+                                        game: item.game,
+                                        hoyoId: item.hoyoId || "",
+                                        region: item.region || "",
+                                    },
+                                })
+                            }
                             key={item.id}
                         >
                             <View
@@ -85,7 +90,12 @@ export default function AccountList() {
                                     </Text>
                                 </View>
                             </View>
-                        </Link>
+                            <SimpleLineIcons
+                                name="arrow-right"
+                                size={24}
+                                color={Colors.button}
+                            />
+                        </TouchableOpacity>
                     )
                 }}
                 ListEmptyComponent={() => {

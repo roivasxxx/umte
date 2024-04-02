@@ -14,7 +14,6 @@ export default function NotificationCheckbox(props: {
             style={{
                 backgroundColor: Colors.content,
                 marginVertical: 5,
-                // padding: 10,
                 borderRadius: 5,
                 alignItems: "center",
                 width: "100%",

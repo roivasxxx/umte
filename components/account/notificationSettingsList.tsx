@@ -1,9 +1,10 @@
-import { Text, View } from "react-native"
+import { Text, TouchableOpacity, View } from "react-native"
 import { useAccount } from "./accountProvider"
 import { Colors } from "@/constants/Colors"
 import NotificationCheckbox from "./notificationCheckbox"
 import SpinningLogo from "../spinningLogo"
-import { Link } from "expo-router"
+import { Link, router } from "expo-router"
+import { SimpleLineIcons } from "@expo/vector-icons"
 
 export default function NotificationSettingsList() {
     const {
@@ -35,9 +36,36 @@ export default function NotificationSettingsList() {
                         text="Events"
                         prop="events"
                     />
-                    <Link href="/(app)/account/item-notifications">
-                        <Text>Items</Text>
-                    </Link>
+                    <TouchableOpacity
+                        onPress={() =>
+                            router.push("/(app)/account/item-notifications")
+                        }
+                        style={{
+                            backgroundColor: Colors.content,
+                            minHeight: 50,
+                            borderRadius: 5,
+                            marginVertical: 5,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: Colors.text,
+                                textAlign: "center",
+                                fontSize: 16,
+                                padding: 5,
+                            }}
+                        >
+                            Items
+                        </Text>
+                        <SimpleLineIcons
+                            name="arrow-right"
+                            size={24}
+                            color={Colors.button}
+                        />
+                    </TouchableOpacity>
                 </>
             )}
         </View>
