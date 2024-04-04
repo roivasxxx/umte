@@ -109,12 +109,16 @@ export type GenshinCharacter = {
         name: string
         icon: string
     }
-    boss: {
+    boss?: {
+        name: string
+        icon: string
+    }
+    gem: {
         name: string
         icon: string
     }
     books: {
         name: string
         icon: string
-    }
+    }[]
 }

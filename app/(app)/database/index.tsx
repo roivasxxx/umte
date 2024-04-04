@@ -104,22 +104,48 @@ export default function Index() {
         >
             <View style={{ width: "100%", flex: 12, padding: 10 }}>
                 <View style={{ flexDirection: "column" }}>
-                    <TextInput
-                        placeholder="Character name"
-                        value={filter.text}
-                        onChangeText={(e) => setFilter({ ...filter, text: e })}
+                    <View
                         style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
                             width: "100%",
                             padding: 10,
-                            backgroundColor: Colors.content,
-                            color: Colors.text,
                             borderRadius: 5,
                             borderColor: Colors.border,
                             borderWidth: 2,
                             marginBottom: 10,
+                            alignItems: "center",
+                            backgroundColor: Colors.content,
                         }}
-                        placeholderTextColor={Colors.text}
-                    />
+                    >
+                        <TextInput
+                            placeholder="Character name"
+                            value={filter.text}
+                            onChangeText={(e) =>
+                                setFilter({ ...filter, text: e })
+                            }
+                            style={{
+                                color: Colors.text,
+                                flex: 10,
+                            }}
+                            clearButtonMode="never"
+                            placeholderTextColor={Colors.text}
+                        />
+                        <TouchableOpacity
+                            style={{
+                                paddingHorizontal: 5,
+                                position: "absolute",
+                                right: 0,
+                            }}
+                            onPress={() => setFilter({ ...filter, text: "" })}
+                        >
+                            <SimpleLineIcons
+                                name="close"
+                                size={18}
+                                color={Colors.button}
+                            />
+                        </TouchableOpacity>
+                    </View>
                     <View>
                         {loading ? (
                             <View
@@ -206,7 +232,7 @@ export default function Index() {
                                 onPress={() => {
                                     router.push({
                                         pathname:
-                                            "/(app)/database/characters/[id]",
+                                            "/(app)/database/genshin-characters/[id]",
                                         params: { id: item.id },
                                     })
                                 }}
@@ -287,7 +313,15 @@ export default function Index() {
                         return loading ? (
                             <MemodSpinningLogo width={200} height={200} />
                         ) : (
-                            <Text>{"No characters found :("}</Text>
+                            <Text
+                                style={{
+                                    color: Colors.text,
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                {"No characters found :("}
+                            </Text>
                         )
                     }}
                 />

@@ -3,6 +3,7 @@ import SpinningLogo from "@/components/spinningLogo"
 import { Colors } from "@/constants/Colors"
 import { itemTypeLabels } from "@/utils/constants"
 import cmsRequest from "@/utils/fetchUtils"
+import { SimpleLineIcons } from "@expo/vector-icons"
 import { router } from "expo-router"
 import { memo, useDeferredValue, useEffect, useMemo, useState } from "react"
 import {
@@ -104,24 +105,49 @@ export default function ItemNotifications() {
                 <View style={{ width: "100%", flex: 12, padding: 10 }}>
                     {/* filter */}
                     <View style={{ flexDirection: "column" }}>
-                        <TextInput
-                            placeholder="Item name"
-                            value={filter.text}
-                            onChangeText={(e) =>
-                                setFilter({ ...filter, text: e })
-                            }
+                        <View
                             style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                alignItems: "center",
                                 width: "100%",
                                 padding: 10,
                                 backgroundColor: Colors.content,
-                                color: Colors.text,
                                 borderRadius: 5,
                                 borderColor: Colors.border,
                                 borderWidth: 2,
                                 marginBottom: 10,
                             }}
-                            placeholderTextColor={Colors.text}
-                        />
+                        >
+                            <TextInput
+                                placeholder="Item name"
+                                value={filter.text}
+                                onChangeText={(e) =>
+                                    setFilter({ ...filter, text: e })
+                                }
+                                style={{
+                                    color: Colors.text,
+                                    flex: 20,
+                                }}
+                                placeholderTextColor={Colors.text}
+                            />
+                            <TouchableOpacity
+                                style={{
+                                    paddingHorizontal: 5,
+                                    position: "absolute",
+                                    right: 0,
+                                }}
+                                onPress={() =>
+                                    setFilter({ ...filter, text: "" })
+                                }
+                            >
+                                <SimpleLineIcons
+                                    name="close"
+                                    size={18}
+                                    color={Colors.button}
+                                />
+                            </TouchableOpacity>
+                        </View>
                         <View>
                             <ScrollView
                                 horizontal
