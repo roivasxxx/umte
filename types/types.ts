@@ -85,3 +85,36 @@ export enum ACCOUNT_REGIONS {
     "os_usa" = "America",
     "os_cht" = "China",
 }
+
+export type GenshinCharacter = {
+    id: string
+    name: string
+    icon: string
+    substat: string
+    weaponType: string
+    rarity: number
+    element: {
+        name: string
+        icon: string
+    }
+    specialty: {
+        name: string
+        icon: string
+    }
+    talent: {
+        name: string
+        icon: string
+    }
+    trounce: {
+        name: string
+        icon: string
+    }
+    boss: {
+        name: string
+        icon: string
+    }
+    books: {
+        name: string
+        icon: string
+    }
+}

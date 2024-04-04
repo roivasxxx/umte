@@ -51,7 +51,7 @@ export default function AccountList() {
                             }}
                             onPress={() =>
                                 router.push({
-                                    pathname: `/(app)/account/[id]`,
+                                    pathname: "/(app)/account/[id]",
                                     params: {
                                         id: item.id,
                                         game: item.game,

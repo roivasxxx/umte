@@ -1,58 +1,44 @@
+import SpinningLogo from "@/components/spinningLogo"
 import { Colors } from "@/constants/Colors"
+import { GenshinCharacter } from "@/types/types"
 import cmsRequest from "@/utils/fetchUtils"
-import { useDeferredValue, useEffect, useMemo, useState } from "react"
+import { SimpleLineIcons } from "@expo/vector-icons"
+import { router } from "expo-router"
+import { memo, useDeferredValue, useEffect, useMemo, useState } from "react"
 import {
-    ScrollView,
+    FlatList,
+    Image,
     Text,
     TextInput,
     TouchableOpacity,
     View,
 } from "react-native"
 
-type ItemState = {
-    id: string
-    name: string
-    icon: string
-    substat: string
-    weaponType: string
-    element: {
-        name: string
-        icon: string
-    }
-    specialty: {
-        name: string
-        icon: string
-    }
-    talent: {
-        name: string
-        icon: string
-    }
-    trounce: {
-        name: string
-        icon: string
-    }
-    boss: {
-        name: string
-        icon: string
-    }
-    books: {
-        name: string
-        icon: string
-    }[]
-}
-
 // render all items here
 export default function Index() {
-    const [items, setItems] = useState<ItemState[]>([])
+    const [items, setItems] = useState<GenshinCharacter[]>([])
+    const [filterOptions, setFilterOptions] = useState<{
+        elements: { name: string; icon: string }[]
+    }>({
+        elements: [],
+    })
     const [filter, setFilter] = useState<{
         text: string
-        element: { name: string; icon: string }[]
+        element: string[]
     }>({
         text: "",
         element: [],
     })
     const [loading, setLoading] = useState(true)
     const deferredFilter = useDeferredValue(filter)
+
+    const MemodSpinningLogo = memo(
+        (props: { width: number; height: number }) => (
+            <View>
+                <SpinningLogo {...props} />
+            </View>
+        )
+    )
 
     const filteredData = useMemo(() => {
         return items.filter((item) => {
@@ -69,9 +55,7 @@ export default function Index() {
 
             const matchesType =
                 deferredFilter.element.length === 0 ||
-                deferredFilter.element
-                    .map((el) => el.name)
-                    .includes(item.element.name)
+                deferredFilter.element.includes(item.element.name)
 
             return matchesText && matchesType
         })
@@ -80,8 +64,8 @@ export default function Index() {
     useEffect(() => {
         const abortController = new AbortController()
         const fetchItems = async () => {
-            let items: ItemState[] = []
-            let elements: typeof filter.element = []
+            let items: GenshinCharacter[] = []
+            let elements: typeof filterOptions.elements = []
             try {
                 const req = await cmsRequest({
                     path: "api/genshin-characters/getGenshinCharacters",
@@ -102,7 +86,7 @@ export default function Index() {
                 }
             } catch (e) {}
             setItems(items)
-            setFilter({ ...filter, element: elements })
+            setFilterOptions({ ...filterOptions, elements: elements })
             setLoading(false)
         }
         fetchItems()
@@ -137,57 +121,176 @@ export default function Index() {
                         placeholderTextColor={Colors.text}
                     />
                     <View>
-                        <ScrollView
-                            horizontal
-                            contentContainerStyle={{
-                                alignItems: "center",
-                                width: "100%",
-                                paddingVertical: 5,
-                            }}
-                        >
-                            {filter.element.map((item) => {
-                                return (
+                        {loading ? (
+                            <View
+                                style={{
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <MemodSpinningLogo width={50} height={50} />
+                            </View>
+                        ) : (
+                            <FlatList
+                                data={filterOptions.elements}
+                                renderItem={({ item }) => (
                                     <TouchableOpacity
                                         key={item.name}
                                         onPress={() => {
                                             setFilter({
                                                 ...filter,
-                                                element: filter.element
-                                                    .map((el) => el.name)
-                                                    .includes(item.name)
-                                                    ? filter.element.filter(
-                                                          (el) =>
-                                                              el.name !==
-                                                              item.name
-                                                      )
-                                                    : [...filter.element, item],
+                                                element:
+                                                    filter.element.includes(
+                                                        item.name
+                                                    )
+                                                        ? filter.element.filter(
+                                                              (el) =>
+                                                                  el !==
+                                                                  item.name
+                                                          )
+                                                        : [
+                                                              ...filter.element,
+                                                              item.name,
+                                                          ],
                                             })
                                         }}
                                         style={{
-                                            padding: 15,
+                                            padding: 5,
                                             backgroundColor:
-                                                filter.element.includes(item)
+                                                filter.element.includes(
+                                                    item.name
+                                                )
                                                     ? Colors.button
                                                     : Colors.content,
                                             borderRadius: 5,
                                             marginHorizontal: 5,
-                                            flex: 1,
+                                            width: 70,
+                                            justifyContent: "center",
+                                            alignItems: "center",
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                textAlign: "center",
-                                                color: Colors.text,
-                                            }}
-                                        >
-                                            {item.name}
-                                        </Text>
+                                        <Image
+                                            source={{ uri: item.icon }}
+                                            width={50}
+                                            height={50}
+                                        />
                                     </TouchableOpacity>
-                                )
-                            })}
-                        </ScrollView>
+                                )}
+                                horizontal
+                                contentContainerStyle={{
+                                    alignItems: "center",
+                                    // width: "100%",
+                                    paddingVertical: 5,
+                                }}
+                                ListEmptyComponent={() => (
+                                    <Text>{"No elements found :("}</Text>
+                                )}
+                            />
+                        )}
                     </View>
                 </View>
+                <FlatList
+                    data={filteredData}
+                    contentContainerStyle={{
+                        padding: 10,
+                    }}
+                    renderItem={({ item }) => {
+                        return (
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: Colors.content,
+                                    padding: 15,
+                                    marginVertical: 5,
+                                    borderRadius: 5,
+                                }}
+                                onPress={() => {
+                                    router.push({
+                                        pathname:
+                                            "/(app)/database/characters/[id]",
+                                        params: { id: item.id },
+                                    })
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            flex: 8,
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Image
+                                                source={{
+                                                    uri: item.icon,
+                                                }}
+                                                width={35}
+                                                height={35}
+                                            />
+                                            <View
+                                                style={{
+                                                    paddingHorizontal: 15,
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        color: Colors.text,
+                                                        fontSize: 16,
+                                                        fontWeight: "bold",
+                                                    }}
+                                                >
+                                                    {item.name}
+                                                </Text>
+                                                <Text
+                                                    style={{
+                                                        color: Colors.fiveStar,
+                                                        fontSize: 10,
+                                                    }}
+                                                >
+                                                    {new Array(item.rarity)
+                                                        .fill("\u2605")
+                                                        .join("")}
+                                                </Text>
+                                                <Image
+                                                    source={{
+                                                        uri: item.element.icon,
+                                                    }}
+                                                    width={20}
+                                                    height={20}
+                                                />
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <SimpleLineIcons
+                                        style={{ flex: 1 }}
+                                        name="arrow-right"
+                                        size={24}
+                                        color={Colors.button}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    }}
+                    ListEmptyComponent={() => {
+                        return loading ? (
+                            <MemodSpinningLogo width={200} height={200} />
+                        ) : (
+                            <Text>{"No characters found :("}</Text>
+                        )
+                    }}
+                />
             </View>
         </View>
     )

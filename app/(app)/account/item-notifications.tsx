@@ -125,10 +125,12 @@ export default function ItemNotifications() {
                         <View>
                             <ScrollView
                                 horizontal
+                                showsHorizontalScrollIndicator
                                 contentContainerStyle={{
-                                    alignItems: "center",
+                                    // alignItems: "center",
                                     width: "100%",
-                                    paddingVertical: 5,
+                                    flexGrow: 1,
+                                    // paddingVertical: 5,
                                 }}
                             >
                                 {ITEM_TYPES.map((item) => {
