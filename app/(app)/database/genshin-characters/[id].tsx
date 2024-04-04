@@ -3,6 +3,7 @@ import SpinningLogo from "@/components/spinningLogo"
 import { Colors } from "@/constants/Colors"
 import { GenshinCharacter } from "@/types/types"
 import cmsRequest, { ResourceType, createResource } from "@/utils/fetchUtils"
+import { capitalizeString } from "@/utils/utils"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense } from "react"
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native"
@@ -98,7 +99,7 @@ const CharacterDetail = (props: { resource: ResourceType }) => {
                         <View>
                             <Text style={styles.propText}>Weapon Type</Text>
                             <Text style={styles.propTextSecondary}>
-                                {character.weaponType}
+                                {capitalizeString(character.weaponType)}
                             </Text>
                         </View>
                         <View>
@@ -106,7 +107,10 @@ const CharacterDetail = (props: { resource: ResourceType }) => {
                                 Level Up Substat
                             </Text>
                             <Text style={styles.propTextSecondary}>
-                                {character.substat}
+                                {character.substat
+                                    .split("_")
+                                    .map(capitalizeString)
+                                    .join(" ")}
                             </Text>
                         </View>
                     </View>
