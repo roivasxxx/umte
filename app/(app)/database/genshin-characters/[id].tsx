@@ -5,7 +5,7 @@ import { GenshinCharacter } from "@/types/types"
 import cmsRequest, { ResourceType, createResource } from "@/utils/fetchUtils"
 import { useLocalSearchParams } from "expo-router"
 import { Suspense } from "react"
-import { Image, StyleSheet, Text, View } from "react-native"
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native"
 
 const styles = StyleSheet.create({
     propContainer: {
@@ -189,7 +189,7 @@ export default function Character() {
     )
 
     return (
-        <View
+        <ScrollView
             style={{
                 width: "100%",
                 height: "100%",
@@ -215,6 +215,6 @@ export default function Character() {
                     <CharacterDetail resource={resource} />
                 </Suspense>
             </ErrorBoundary>
-        </View>
+        </ScrollView>
     )
 }
