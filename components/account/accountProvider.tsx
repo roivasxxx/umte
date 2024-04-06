@@ -8,6 +8,18 @@ import {
     useContext,
     ReactNode,
 } from "react"
+import * as Device from "expo-device"
+import * as Notifications from "expo-notifications"
+import Constants from "expo-constants"
+import { Platform } from "react-native"
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+})
 
 type GenshinAccountState = {
     genshinAccounts: any[]
@@ -33,6 +45,9 @@ type AccountContext = {
               hoyoId: string
           }) => Promise<string>)
         | null
+    registerDevicePushTokenAsync: (token: string) => Promise<void> | null
+    registerForPushNotificationsAsync: () => Promise<void> | null
+    testUserNotification: () => Promise<void> | null
 }
 
 const defaultAccountState: GenshinAccountState = {
@@ -49,6 +64,9 @@ const AccountContext = createContext<AccountContext>({
     account: defaultAccountState,
     setNotifications: null,
     createGenshinAccount: null,
+    registerDevicePushTokenAsync: () => null,
+    registerForPushNotificationsAsync: () => null,
+    testUserNotification: () => null,
 })
 
 export const useAccount = () => useContext(AccountContext)
@@ -105,6 +123,11 @@ export default function AccountProvider(props: { children: ReactNode }) {
 
     useEffect(() => {
         getAccountData()
+
+        const subscription = Notifications.addPushTokenListener((token) =>
+            registerDevicePushTokenAsync(token.data)
+        )
+        return () => subscription.remove()
     }, [])
 
     const setNotifications = async <
@@ -159,9 +182,81 @@ export default function AccountProvider(props: { children: ReactNode }) {
         return ""
     }
 
+    /**
+     * Handles setting the user's push token
+     */
+    async function registerDevicePushTokenAsync(expoPushToken: string) {
+        try {
+            await cmsRequest({
+                path: "/api/public-users/setExpoPushToken",
+                method: "POST",
+                body: { expoPushToken },
+            })
+        } catch (error) {
+            console.error("Failed to set expo push token", error)
+        }
+    }
+
+    /**
+     * Handles getting the user's push token, handles permissions etc
+     */
+    async function registerForPushNotificationsAsync(): Promise<void> {
+        let token
+        console.log("registering for push notifications")
+
+        if (Platform.OS === "android") {
+            Notifications.setNotificationChannelAsync("default", {
+                name: "default",
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: "#FF231F7C",
+            })
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } =
+                await Notifications.getPermissionsAsync()
+            let finalStatus = existingStatus
+            if (existingStatus !== "granted") {
+                const { status } = await Notifications.requestPermissionsAsync()
+                finalStatus = status
+            }
+            if (finalStatus !== "granted") {
+                alert("Failed to get push token for push notification!")
+                return
+            }
+            token = await Notifications.getExpoPushTokenAsync({
+                projectId: Constants?.expoConfig?.extra?.eas.projectId,
+            })
+        } else {
+            alert("Must use physical device for Push Notifications")
+            return
+        }
+
+        await registerDevicePushTokenAsync(token.data)
+    }
+
+    async function testUserNotification() {
+        try {
+            await cmsRequest({
+                method: "GET",
+                path: "/api/public-users/sendExpoNotifications",
+            })
+        } catch (error) {
+            console.error("testUserNotification threw an error", error)
+        }
+    }
+
     return (
         <AccountContext.Provider
-            value={{ account, setNotifications, createGenshinAccount }}
+            value={{
+                account,
+                setNotifications,
+                createGenshinAccount,
+                registerDevicePushTokenAsync,
+                registerForPushNotificationsAsync,
+                testUserNotification,
+            }}
         >
             {props.children}
         </AccountContext.Provider>

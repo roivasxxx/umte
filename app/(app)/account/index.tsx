@@ -1,11 +1,13 @@
 import AccountList from "@/components/account/accountList"
+import { useAccount } from "@/components/account/accountProvider"
 import NotificationSettingsList from "@/components/account/notificationSettingsList"
 import { useSession } from "@/components/auth/authProvider"
 import { Colors } from "@/constants/Colors"
 import { Text, TouchableOpacity, View } from "react-native"
 
 export default function Account() {
-    const { signOut, session, testUserNotification } = useSession()
+    const { signOut, session } = useSession()
+    const { testUserNotification } = useAccount()
 
     return (
         <View
@@ -14,7 +16,6 @@ export default function Account() {
                 height: "100%",
                 padding: 10,
                 flexDirection: "column",
-                // justifyContent: "flex-end",
             }}
         >
             <TouchableOpacity

@@ -10,6 +10,8 @@ import { Link } from "expo-router"
 
 export default function App() {
     const { loading } = useSession()
+
+    // TODO: add loading into button instead
     if (loading) {
         return (
             <View style={styles.FLEX_CENTERED_COLUMN}>

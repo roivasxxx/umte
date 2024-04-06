@@ -3,18 +3,6 @@ import * as SecureStore from "expo-secure-store"
 import cmsRequest from "@/utils/fetchUtils"
 import { router } from "expo-router"
 import { AxiosError, isAxiosError } from "axios"
-import * as Device from "expo-device"
-import * as Notifications from "expo-notifications"
-import Constants from "expo-constants"
-import { Platform } from "react-native"
-
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-    }),
-})
 
 // the data is not really needed, so just store something in the session
 export type User = {
@@ -37,9 +25,6 @@ const AuthContext = React.createContext<{
         email: string,
         setStatus: (e: string) => void
     ) => Promise<void> | null
-    registerDevicePushTokenAsync: () => Promise<void> | null
-    registerForPushNotificationsAsync: () => Promise<string> | null
-    testUserNotification: () => Promise<void> | null
     session: User | null
     loading: boolean
 }>({
@@ -47,9 +32,6 @@ const AuthContext = React.createContext<{
     signOut: () => null,
     signUp: () => null,
     forgotPassword: () => null,
-    registerDevicePushTokenAsync: () => null,
-    registerForPushNotificationsAsync: () => null,
-    testUserNotification: () => null,
     session: null,
     loading: true,
 })
@@ -81,78 +63,9 @@ export function SessionProvider(props: React.PropsWithChildren) {
         router.replace("/")
     }
 
-    /**
-     * Handles setting the user's push token
-     */
-    async function registerDevicePushTokenAsync() {
-        if (session) {
-            const expoPushToken = await registerForPushNotificationsAsync()
-            if (expoPushToken) {
-                try {
-                    await cmsRequest({
-                        path: "/api/public-users/setExpoPushToken",
-                        method: "POST",
-                        body: { expoPushToken },
-                    })
-                } catch (error) {
-                    console.error("Failed to set expo push token", error)
-                    resetSession()
-                }
-            }
-        }
-    }
-
-    /**
-     * Handles getting the user's push token, handles permissions etc
-     */
-    async function registerForPushNotificationsAsync(): Promise<string> {
-        let token
-
-        if (Platform.OS === "android") {
-            Notifications.setNotificationChannelAsync("default", {
-                name: "default",
-                importance: Notifications.AndroidImportance.MAX,
-                vibrationPattern: [0, 250, 250, 250],
-                lightColor: "#FF231F7C",
-            })
-        }
-
-        if (Device.isDevice) {
-            const { status: existingStatus } =
-                await Notifications.getPermissionsAsync()
-            let finalStatus = existingStatus
-            if (existingStatus !== "granted") {
-                const { status } = await Notifications.requestPermissionsAsync()
-                finalStatus = status
-            }
-            if (finalStatus !== "granted") {
-                alert("Failed to get push token for push notification!")
-                return ""
-            }
-            token = await Notifications.getExpoPushTokenAsync({
-                projectId: Constants?.expoConfig?.extra?.eas.projectId,
-            })
-        } else {
-            alert("Must use physical device for Push Notifications")
-            return ""
-        }
-
-        return token.data
-    }
-
-    async function testUserNotification() {
-        try {
-            await cmsRequest({
-                method: "GET",
-                path: "/api/public-users/sendExpoNotifications",
-            })
-        } catch (error) {
-            console.error("testUserNotification threw an error", error)
-        }
-    }
-
     useEffect(() => {
         const getToken = async () => {
+            console.log("when does this piece of shit run")
             // check if token exists
             const token = SecureStore.getItem("payload-token")
             if (token) {
@@ -186,11 +99,6 @@ export function SessionProvider(props: React.PropsWithChildren) {
             setLoading(false)
         }
         getToken()
-
-        const subscription = Notifications.addPushTokenListener(
-            registerDevicePushTokenAsync
-        )
-        return () => subscription.remove()
     }, [])
 
     return (
@@ -283,9 +191,6 @@ export function SessionProvider(props: React.PropsWithChildren) {
                         console.error("Error during forgot password", error)
                     }
                 },
-                registerDevicePushTokenAsync,
-                registerForPushNotificationsAsync,
-                testUserNotification,
                 loading,
                 session,
             }}
