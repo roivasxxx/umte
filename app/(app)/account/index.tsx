@@ -5,7 +5,7 @@ import { Colors } from "@/constants/Colors"
 import { Text, TouchableOpacity, View } from "react-native"
 
 export default function Account() {
-    const { signOut, session } = useSession()
+    const { signOut, session, testUserNotification } = useSession()
 
     return (
         <View
@@ -17,19 +17,28 @@ export default function Account() {
                 // justifyContent: "flex-end",
             }}
         >
-            <Text
-                style={{
-                    color: Colors.text,
-                    fontWeight: "bold",
-                    fontSize: 20,
-                    textAlign: "center",
+            <TouchableOpacity
+                onPress={async () => {
+                    // notifications are sent by the server at a specified time
+                    // so testing the functionality is achieved this way -> click the user email -> notifications should be sent
+                    await testUserNotification()
                 }}
             >
-                {session?.email}
-            </Text>
+                <Text
+                    style={{
+                        color: Colors.text,
+                        fontWeight: "bold",
+                        fontSize: 20,
+                        textAlign: "center",
+                    }}
+                >
+                    {session?.email}
+                </Text>
+            </TouchableOpacity>
 
             <AccountList />
             <NotificationSettingsList />
+
             <TouchableOpacity
                 onPress={signOut}
                 style={{

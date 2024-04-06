@@ -29,11 +29,11 @@ export default function AppTabLayout() {
                 }}
             >
                 <Tabs.Screen
-                    name="home"
+                    name="account"
                     options={{
                         headerShown: false,
                         tabBarIcon: ({ color }) => (
-                            <Entypo name="home" size={24} color={color} />
+                            <FontAwesome name="user" size={24} color={color} />
                         ),
                     }}
                 />
@@ -47,15 +47,6 @@ export default function AppTabLayout() {
                                 size={24}
                                 color={color}
                             />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
-                    name="account"
-                    options={{
-                        headerShown: false,
-                        tabBarIcon: ({ color }) => (
-                            <FontAwesome name="user" size={24} color={color} />
                         ),
                     }}
                 />

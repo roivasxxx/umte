@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 import cmsRequest from "@/utils/fetchUtils"
 import { router } from "expo-router"
@@ -39,6 +39,7 @@ const AuthContext = React.createContext<{
     ) => Promise<void> | null
     registerDevicePushTokenAsync: () => Promise<void> | null
     registerForPushNotificationsAsync: () => Promise<string> | null
+    testUserNotification: () => Promise<void> | null
     session: User | null
     loading: boolean
 }>({
@@ -48,6 +49,7 @@ const AuthContext = React.createContext<{
     forgotPassword: () => null,
     registerDevicePushTokenAsync: () => null,
     registerForPushNotificationsAsync: () => null,
+    testUserNotification: () => null,
     session: null,
     loading: true,
 })
@@ -138,6 +140,17 @@ export function SessionProvider(props: React.PropsWithChildren) {
         return token.data
     }
 
+    async function testUserNotification() {
+        try {
+            await cmsRequest({
+                method: "GET",
+                path: "/api/public-users/sendExpoNotifications",
+            })
+        } catch (error) {
+            console.error("testUserNotification threw an error", error)
+        }
+    }
+
     useEffect(() => {
         const getToken = async () => {
             // check if token exists
@@ -164,7 +177,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                         throw new Error("ME_ERROR")
                     }
                     // redirect to home if token is valid
-                    router.replace("/home")
+                    router.replace("/(app)/account")
                 } catch (error) {
                     console.error("Error while fetching user", error)
                     resetSession()
@@ -203,7 +216,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                             // store token and user email
                             SecureStore.setItem("payload-token", data.token)
                             setSession({ email: data.user.email })
-                            router.replace("/home")
+                            router.replace("/(app)/account")
                         }
                     } catch (e) {
                         console.error("Error during login", e)
@@ -240,7 +253,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                             // store token and user email
                             SecureStore.setItem("payload-token", data.token)
                             setSession({ email: data.user.email })
-                            router.replace("/home")
+                            router.replace("/(app)/account")
                         }
                     } catch (error) {
                         if (isAxiosError(error)) {
@@ -272,6 +285,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                 },
                 registerDevicePushTokenAsync,
                 registerForPushNotificationsAsync,
+                testUserNotification,
                 loading,
                 session,
             }}
