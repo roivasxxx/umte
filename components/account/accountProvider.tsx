@@ -115,6 +115,7 @@ export default function AccountProvider(props: { children: ReactNode }) {
                     }
                 }
             }
+            await registerForPushNotificationsAsync()
         } catch (error) {
             console.error("Error getting account data", error)
         }
@@ -123,11 +124,6 @@ export default function AccountProvider(props: { children: ReactNode }) {
 
     useEffect(() => {
         getAccountData()
-
-        const subscription = Notifications.addPushTokenListener((token) =>
-            registerDevicePushTokenAsync(token.data)
-        )
-        return () => subscription.remove()
     }, [])
 
     const setNotifications = async <

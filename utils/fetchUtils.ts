@@ -7,7 +7,7 @@ import Constants from "expo-constants"
 
 const BE_URL = process.env.EXPO_PUBLIC_BACKEND_URL
     ? process.env.EXPO_PUBLIC_BACKEND_URL
-    : Constants?.expoConfig?.extra?.eas
+    : Constants?.expoConfig?.extra?.eas.BE_URL
 
 export default async function cmsRequest(
     fetchParams: {
