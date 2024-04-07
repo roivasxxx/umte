@@ -3,6 +3,11 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import * as SecureStore from "expo-secure-store"
 import * as FileSystem from "expo-file-system"
 import { shareAsync } from "expo-sharing"
+import Constants from "expo-constants"
+
+const BE_URL = process.env.EXPO_PUBLIC_BACKEND_URL
+    ? process.env.EXPO_PUBLIC_BACKEND_URL
+    : Constants?.expoConfig?.extra?.eas
 
 export default async function cmsRequest(
     fetchParams: {
@@ -13,10 +18,7 @@ export default async function cmsRequest(
 ) {
     const { path, abortController, body, headers, method, params } = fetchParams
 
-    const url = new URL(
-        process.env.EXPO_PUBLIC_BACKEND_URL +
-            (path[0] === "/" ? path : "/" + path)
-    )
+    const url = new URL(BE_URL + (path[0] === "/" ? path : "/" + path))
 
     if (method === "GET" && params) {
         Object.keys(params).forEach((key) => {
@@ -91,9 +93,7 @@ export const downloadFile = async (
 ) => {
     const token = SecureStore.getItem("payload-token")
 
-    const _url = new URL(
-        process.env.EXPO_PUBLIC_BACKEND_URL + (url[0] === "/" ? url : "/" + url)
-    )
+    const _url = new URL(BE_URL + (url[0] === "/" ? url : "/" + url))
 
     const downloadResumable = FileSystem.createDownloadResumable(
         _url.href,
