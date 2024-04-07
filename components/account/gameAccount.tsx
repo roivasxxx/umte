@@ -1,10 +1,10 @@
 import React from "react"
-import { ResourceType } from "@/utils/fetchUtils"
-import { ScrollView, Text, View } from "react-native"
+import { ResourceType, downloadFile } from "@/utils/fetchUtils"
+import { ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { Colors } from "@/constants/Colors"
 import { BANNER_TYPE, WishInfo } from "@/types/types"
 import { Link } from "expo-router"
-import { FontAwesome } from "@expo/vector-icons"
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons"
 const BannerInfo = <T extends BANNER_TYPE>(props: {
     banner: T
     data: WishInfo[T]
@@ -183,11 +183,37 @@ export default function GameAccount(props: { resource: ResourceType }) {
                 marginVertical: 10,
             }}
         >
-            <Text
-                style={{ color: Colors.text, fontWeight: "bold", fontSize: 18 }}
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                }}
             >
-                Wishes
-            </Text>
+                <Text
+                    style={{
+                        color: Colors.text,
+                        fontWeight: "bold",
+                        fontSize: 18,
+                    }}
+                >
+                    Wishes
+                </Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        downloadFile(
+                            `api/genshin-accounts/exportWishHistory?accountId=${accountId}`,
+                            `wish-history-${new Date().getTime()}.json`
+                        )
+                    }}
+                >
+                    <MaterialCommunityIcons
+                        name="file-export"
+                        size={24}
+                        color={Colors.button}
+                    />
+                </TouchableOpacity>
+            </View>
             <BannerInfo
                 banner={BANNER_TYPE.STANDARD}
                 data={wishInfo.standard}

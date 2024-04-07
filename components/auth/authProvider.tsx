@@ -65,7 +65,6 @@ export function SessionProvider(props: React.PropsWithChildren) {
 
     useEffect(() => {
         const getToken = async () => {
-            console.log("when does this piece of shit run")
             // check if token exists
             const token = SecureStore.getItem("payload-token")
             if (token) {

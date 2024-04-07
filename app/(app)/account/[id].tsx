@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react"
+import React, { Suspense } from "react"
 import { useLocalSearchParams } from "expo-router"
 import cmsRequest, { createResource } from "@/utils/fetchUtils"
 import GameAccount from "@/components/account/gameAccount"

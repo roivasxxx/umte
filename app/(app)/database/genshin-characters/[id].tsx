@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
 const CharacterDetail = (props: { resource: ResourceType }) => {
     const res = props.resource.read()
 
-    console.log(res?.data)
     const character: GenshinCharacter = res?.data
 
     return (

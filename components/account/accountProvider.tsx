@@ -164,7 +164,6 @@ export default function AccountProvider(props: { children: ReactNode }) {
         hoyoId: string
     }) => {
         try {
-            console.log(acc)
             const response = await cmsRequest({
                 path: "api/genshin-accounts/create-genshin-account",
                 method: "POST",
@@ -202,7 +201,6 @@ export default function AccountProvider(props: { children: ReactNode }) {
      */
     async function registerForPushNotificationsAsync(): Promise<void> {
         let token
-        console.log("registering for push notifications")
 
         if (Platform.OS === "android") {
             Notifications.setNotificationChannelAsync("default", {
