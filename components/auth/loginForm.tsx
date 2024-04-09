@@ -9,8 +9,8 @@ export default function LoginForm(props: {
 }) {
     const { signIn, signUp } = useSession()
     const [userState, setUserState] = useState({
-        email: "test@test.cz",
-        password: "password",
+        email: "",
+        password: "",
         error: null,
     })
 
