@@ -73,6 +73,7 @@ export default function LoginForm(props: {
                     marginBottom: 10,
                 }}
                 placeholderTextColor={Colors.text}
+                secureTextEntry
             />
             <TouchableOpacity
                 onPress={() => {
