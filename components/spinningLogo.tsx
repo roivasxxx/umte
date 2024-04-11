@@ -1,11 +1,17 @@
-import { useEffect } from "react"
+import { useEffect, memo } from "react"
 import { Animated, Easing } from "react-native"
 import Splash from "../assets/images/splash.svg"
 
 /**
  * Used as a loading indicator in the app
  */
-export default function SpinningLogo({ width = 200, height = 200 }) {
+const SpinningLogo = memo(function SpinningLogo({
+    width = 200,
+    height = 200,
+}: {
+    width?: number
+    height?: number
+}) {
     const spinValue = new Animated.Value(0)
     const rotate = spinValue.interpolate({
         inputRange: [0, 1],
@@ -34,7 +40,6 @@ export default function SpinningLogo({ width = 200, height = 200 }) {
                 {
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: 40,
                 },
                 { transform: [{ rotate: rotate }] },
             ]}
@@ -42,4 +47,6 @@ export default function SpinningLogo({ width = 200, height = 200 }) {
             <Splash width={width} height={height} />
         </Animated.View>
     )
-}
+})
+
+export default SpinningLogo

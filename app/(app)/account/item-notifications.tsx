@@ -42,12 +42,6 @@ export default function ItemNotifications() {
 
     const deferredFilter = useDeferredValue(filter)
 
-    const MemodSpinningLogo = memo(() => (
-        <View>
-            <SpinningLogo width={35} height={35} />
-        </View>
-    ))
-
     useEffect(() => {
         const abortController = new AbortController()
         const fetchItems = async () => {
@@ -306,7 +300,7 @@ export default function ItemNotifications() {
                     }}
                 >
                     {loading ? (
-                        <MemodSpinningLogo />
+                        <SpinningLogo width={35} height={35} />
                     ) : (
                         <Text
                             style={{

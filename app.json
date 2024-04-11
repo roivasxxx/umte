@@ -21,6 +21,7 @@
                 "foregroundImage": "./assets/images/adaptive-icon.png",
                 "backgroundColor": "#1e1f22"
             },
+            "googleServicesFile": "./google-services.json",
             "package": "com.roivasxxx.umte"
         },
         "web": {

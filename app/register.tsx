@@ -1,24 +1,13 @@
-import { useSession } from "@/components/auth/authProvider"
 import LoginForm from "@/components/auth/loginForm"
 import { Colors } from "@/constants/Colors"
 import styles from "@/constants/styles"
 import React from "react"
-import { ActivityIndicator, View } from "react-native"
+import { View } from "react-native"
 
 /**
  * Register screen
  */
 export default function Register() {
-    const { loading } = useSession()
-
-    if (loading) {
-        return (
-            <View>
-                <ActivityIndicator />
-            </View>
-        )
-    }
-
     return (
         <View
             style={[

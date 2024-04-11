@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react"
 import { useSession } from "./authProvider"
 import { Text, TextInput, TouchableOpacity } from "react-native"
 import { Colors } from "@/constants/Colors"
+import SpinningLogo from "../spinningLogo"
 
 /**
  * Shared component for login and signup, they differ in the button text, and some extra children provided by the children prop
@@ -10,7 +11,7 @@ export default function LoginForm(props: {
     buttonText: "Sign in" | "Sign up"
     children?: ReactNode
 }) {
-    const { signIn, signUp } = useSession()
+    const { loading, signIn, signUp } = useSession()
     const [userState, setUserState] = useState({
         email: "",
         password: "",
@@ -87,11 +88,15 @@ export default function LoginForm(props: {
                     marginVertical: 10,
                     alignItems: "center",
                     justifyContent: "center",
-                    backgroundColor: Colors.button,
+                    backgroundColor: loading ? Colors.content : Colors.button,
                     borderRadius: 5,
                 }}
             >
-                <Text>{props.buttonText}</Text>
+                {loading ? (
+                    <SpinningLogo width={35} height={35} />
+                ) : (
+                    <Text>{props.buttonText}</Text>
+                )}
             </TouchableOpacity>
 
             {props.children}

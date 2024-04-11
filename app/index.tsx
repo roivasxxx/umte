@@ -1,6 +1,4 @@
-import { useSession } from "@/components/auth/authProvider"
 import LoginForm from "@/components/auth/loginForm"
-import SpinningLogo from "@/components/spinningLogo"
 import { Colors } from "@/constants/Colors"
 import styles from "@/constants/styles"
 import React from "react"
@@ -12,16 +10,6 @@ import { Link } from "expo-router"
  * Login screen
  */
 export default function App() {
-    const { loading } = useSession()
-
-    if (loading) {
-        return (
-            <View style={styles.FLEX_CENTERED_COLUMN}>
-                <SpinningLogo />
-            </View>
-        )
-    }
-
     return (
         <View
             style={[
