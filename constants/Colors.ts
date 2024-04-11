@@ -1,3 +1,4 @@
+// color layout
 export const Colors = {
     background: "#1e1f22",
     backSecondary: "#2b2d31",

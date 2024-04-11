@@ -34,6 +34,10 @@ const styles = StyleSheet.create({
     },
 })
 
+/**
+ * Character detail component
+ * This component lives inside a React.Suspense
+ */
 const CharacterDetail = (props: { resource: ResourceType }) => {
     const res = props.resource.read()
 
@@ -180,6 +184,9 @@ const CharacterDetail = (props: { resource: ResourceType }) => {
     )
 }
 
+/**
+ * Specific character page
+ */
 export default function Character() {
     const { id } = useLocalSearchParams()
 

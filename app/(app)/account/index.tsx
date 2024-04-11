@@ -5,6 +5,9 @@ import { useSession } from "@/components/auth/authProvider"
 import { Colors } from "@/constants/Colors"
 import { Text, TouchableOpacity, View } from "react-native"
 
+/**
+ * Account screen
+ */
 export default function Account() {
     const { signOut, session } = useSession()
     const { testUserNotification } = useAccount()

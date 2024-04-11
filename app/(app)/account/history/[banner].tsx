@@ -11,8 +11,13 @@ import {
     removeOrientationChangeListeners,
 } from "expo-screen-orientation"
 
+/**
+ * Banner History screen
+ */
 export default function History() {
     const { accountId, banner } = useLocalSearchParams()
+    // listening to orientation is needed here
+    // landscape orientation is not ideal when rendering this list
     const [orientation, setOrientation] = useState(Orientation.UNKNOWN)
     const [listState, setListState] = useState<{
         history: Wish[]
@@ -30,6 +35,9 @@ export default function History() {
 
     const abortController = useRef<AbortController | null>(null)
 
+    /**
+     * Handles getting wish history
+     */
     const getHistory = async () => {
         if (listState.hasMore && !listState.loading) {
             setListState((state) => ({
@@ -74,11 +82,12 @@ export default function History() {
 
     useEffect(() => {
         getHistory()
-
+        // listen to orientation changes
         addOrientationChangeListener((e) => {
             setOrientation(e.orientationInfo.orientation)
         })
         return () => {
+            // cleanup
             if (abortController.current) {
                 abortController.current.abort()
             }

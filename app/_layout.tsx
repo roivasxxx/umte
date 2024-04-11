@@ -4,6 +4,9 @@ import { Slot } from "expo-router"
 import { View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+/**
+ * Root layout
+ */
 export default function Root() {
     return (
         <View

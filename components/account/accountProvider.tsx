@@ -71,10 +71,16 @@ const AccountContext = createContext<AccountContext>({
 
 export const useAccount = () => useContext(AccountContext)
 
+/**
+ * Account Provider Wrapper
+ */
 export default function AccountProvider(props: { children: ReactNode }) {
     const [account, setAccount] =
         useState<GenshinAccountState>(defaultAccountState)
 
+    /**
+     * Fetches account data
+     */
     async function getAccountData() {
         const _account = createDeepCopy(defaultAccountState)
         try {
@@ -90,6 +96,7 @@ export default function AccountProvider(props: { children: ReactNode }) {
                     Array.isArray(data.user.genshinAccounts) &&
                     data.user.genshinAccounts.length > 0
                 ) {
+                    // we only really care about the user's genshin accounts
                     _account.genshinAccounts = data.user.genshinAccounts.map(
                         (el: any) => ({
                             id: el.id,
@@ -99,6 +106,7 @@ export default function AccountProvider(props: { children: ReactNode }) {
                         })
                     )
                 }
+                // and their notification settings
                 if (data.user.tracking) {
                     _account.notifications = {
                         ...data.user.tracking,
@@ -126,6 +134,10 @@ export default function AccountProvider(props: { children: ReactNode }) {
         getAccountData()
     }, [])
 
+    /**
+     * Handles setting the user's notification settings
+     * @returns
+     */
     const setNotifications = async <
         T extends keyof GenshinAccountState["notifications"]
     >(
@@ -155,6 +167,10 @@ export default function AccountProvider(props: { children: ReactNode }) {
         }
         return false
     }
+
+    /**
+     * Handles creating a new genshin account
+     */
     const createGenshinAccount = async (acc: {
         region: ACCOUNT_REGIONS
         hoyoId: string
@@ -230,6 +246,9 @@ export default function AccountProvider(props: { children: ReactNode }) {
         await registerDevicePushTokenAsync(token.data)
     }
 
+    /**
+     * Notifications are only sent a couple of times a day, this ensures that the functionality can be demonstrated
+     */
     async function testUserNotification() {
         try {
             await cmsRequest({

@@ -2,6 +2,9 @@ import { useEffect } from "react"
 import { Animated, Easing } from "react-native"
 import Splash from "../assets/images/splash.svg"
 
+/**
+ * Used as a loading indicator in the app
+ */
 export default function SpinningLogo({ width = 200, height = 200 }) {
     const spinValue = new Animated.Value(0)
     const rotate = spinValue.interpolate({

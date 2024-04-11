@@ -9,6 +9,9 @@ interface State {
     hasError: boolean
 }
 
+/**
+ * Error boundary for React components
+ */
 class ErrorBoundary extends React.Component<Props, State> {
     constructor(props: {
         fallback: React.JSX.Element

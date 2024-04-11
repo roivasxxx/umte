@@ -8,10 +8,12 @@ import { Text, View } from "react-native"
 import Splash from "../assets/images/splash.svg"
 import { Link } from "expo-router"
 
+/**
+ * Login screen
+ */
 export default function App() {
     const { loading } = useSession()
 
-    // TODO: add loading into button instead
     if (loading) {
         return (
             <View style={styles.FLEX_CENTERED_COLUMN}>

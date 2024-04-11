@@ -2,6 +2,11 @@ import { Colors } from "@/constants/Colors"
 import { Text, TouchableOpacity, View } from "react-native"
 import { useAccount } from "./accountProvider"
 
+/**
+ * Notification checkbox
+ * if value is true, the checkbox is checked -> the component is green
+ * false, checkbox is not checked -> the component is red
+ */
 export default function NotificationCheckbox(props: {
     prop: "banners" | "events"
     text: "Banners" | "Events"

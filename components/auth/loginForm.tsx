@@ -3,6 +3,9 @@ import { useSession } from "./authProvider"
 import { Text, TextInput, TouchableOpacity } from "react-native"
 import { Colors } from "@/constants/Colors"
 
+/**
+ * Shared component for login and signup, they differ in the button text, and some extra children provided by the children prop
+ */
 export default function LoginForm(props: {
     buttonText: "Sign in" | "Sign up"
     children?: ReactNode

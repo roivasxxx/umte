@@ -7,6 +7,11 @@ import SpinningLogo from "@/components/spinningLogo"
 import { Colors } from "@/constants/Colors"
 import { GAME_ICONS } from "@/utils/imageUtils"
 
+/**
+ * Screen for specific game acount
+ * This component lives inside a React.Suspense
+ * It currently only supports one game -> needs to be refactored once more games are supported
+ */
 export default function Account() {
     const { id, game, hoyoId, region } = useLocalSearchParams()
 

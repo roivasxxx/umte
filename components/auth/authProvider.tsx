@@ -4,7 +4,8 @@ import cmsRequest from "@/utils/fetchUtils"
 import { router } from "expo-router"
 import { AxiosError, isAxiosError } from "axios"
 
-// the data is not really needed, so just store something in the session
+// we do not really need the data, instead we just need something to differentiate a logged in vs logged out user
+// so we just store something about the user in the session
 export type User = {
     email: string
 }
@@ -36,7 +37,9 @@ const AuthContext = React.createContext<{
     loading: true,
 })
 
-// This hook can be used to access the user info.
+/**
+ * This hook can be used to access the user info
+ */
 export function useSession() {
     const value = React.useContext(AuthContext)
     if (process.env.NODE_ENV !== "production") {
@@ -50,6 +53,9 @@ export function useSession() {
     return value
 }
 
+/**
+ * Session provider wrapper
+ */
 export function SessionProvider(props: React.PropsWithChildren) {
     const [session, setSession] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)

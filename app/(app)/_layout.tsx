@@ -1,9 +1,12 @@
 import { useSession } from "@/components/auth/authProvider"
 import { Redirect, Tabs } from "expo-router"
 import { Colors } from "@/constants/Colors"
-
 import { FontAwesome } from "@expo/vector-icons"
 import AccountProvider from "@/components/account/accountProvider"
+
+/**
+ * App tab layout
+ */
 export default function AppTabLayout() {
     const { session } = useSession()
     if (!session) {

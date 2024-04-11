@@ -20,7 +20,8 @@
             "adaptiveIcon": {
                 "foregroundImage": "./assets/images/adaptive-icon.png",
                 "backgroundColor": "#1e1f22"
-            }
+            },
+            "package": "com.roivasxxx.umte"
         },
         "web": {
             "bundler": "metro",
@@ -35,6 +36,13 @@
                 {
                     "initialOrientation": "LANDSCAPE"
                 }
+            ],
+            [
+                "expo-notifications",
+                {
+                    "icon": "./assets/images/notification-icon.png",
+                    "color": "#ffffff"
+                }
             ]
         ],
         "experiments": {
@@ -43,7 +51,7 @@
         "extra": {
             "eas": {
                 "projectId": "2980e601-0810-4ddc-a702-07993add4afa",
-                "BE_URL": ""
+                "BE_URL": "https://be.electromains.fun"
             }
         }
     }

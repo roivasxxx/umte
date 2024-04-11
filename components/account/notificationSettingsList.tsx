@@ -3,9 +3,13 @@ import { useAccount } from "./accountProvider"
 import { Colors } from "@/constants/Colors"
 import NotificationCheckbox from "./notificationCheckbox"
 import SpinningLogo from "../spinningLogo"
-import { Link, router } from "expo-router"
+import { router } from "expo-router"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
+/**
+ * Notification settings list
+ * displays banners/events and item notifications
+ */
 export default function NotificationSettingsList() {
     const {
         account: { notifications, loading },

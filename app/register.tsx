@@ -5,6 +5,9 @@ import styles from "@/constants/styles"
 import React from "react"
 import { ActivityIndicator, View } from "react-native"
 
+/**
+ * Register screen
+ */
 export default function Register() {
     const { loading } = useSession()
 

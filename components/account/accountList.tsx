@@ -5,6 +5,10 @@ import { Link, router } from "expo-router"
 import { GAME_ICONS } from "@/utils/imageUtils"
 import SpinningLogo from "../spinningLogo"
 import { AntDesign, SimpleLineIcons } from "@expo/vector-icons"
+
+/**
+ * Genshin Account list
+ */
 export default function AccountList() {
     const { account } = useAccount()
 

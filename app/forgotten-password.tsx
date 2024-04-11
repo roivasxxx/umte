@@ -10,10 +10,13 @@ import {
     View,
 } from "react-native"
 
+/**
+ * Forgotten password screen
+ */
 export default function ForgottenPassword() {
     const { loading, forgotPassword } = useSession()
     const [userState, setUserState] = useState({
-        email: "testtestcz@test.cz",
+        email: "",
         status: "",
     })
 

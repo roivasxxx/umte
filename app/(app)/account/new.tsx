@@ -6,6 +6,9 @@ import { router } from "expo-router"
 import { useState } from "react"
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native"
 
+/**
+ * New Genshin Account screen
+ */
 export default function NewAccount() {
     const { createGenshinAccount } = useAccount()
 

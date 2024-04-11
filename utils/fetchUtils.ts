@@ -5,10 +5,14 @@ import * as FileSystem from "expo-file-system"
 import { shareAsync } from "expo-sharing"
 import Constants from "expo-constants"
 
+// local backend
 const BE_URL = process.env.EXPO_PUBLIC_BACKEND_URL
     ? process.env.EXPO_PUBLIC_BACKEND_URL
     : Constants?.expoConfig?.extra?.eas.BE_URL
 
+/**
+ * Handles making requests to the backend
+ */
 export default async function cmsRequest(
     fetchParams: {
         path: string
@@ -55,6 +59,9 @@ export default async function cmsRequest(
     return await axios(fetchOptions)
 }
 
+/**
+ * Wrapping promises for the React.Suspense component
+ */
 const wrapPromise = (promise: Promise<AxiosResponse<any, any>>) => {
     let status = "pending"
     let result: AxiosResponse<any, any> | null = null
@@ -80,12 +87,18 @@ const wrapPromise = (promise: Promise<AxiosResponse<any, any>>) => {
     }
 }
 
+/**
+ * Used to make requests to the backend when using React.Suspense
+ */
 export const createResource = (request: Promise<AxiosResponse<any, any>>) => {
     return wrapPromise(request)
 }
 
 export type ResourceType = ReturnType<typeof createResource>
 
+/**
+ * Handles downloading a file
+ */
 export const downloadFile = async (
     url: string,
     filename: string,

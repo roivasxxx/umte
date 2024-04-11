@@ -5,6 +5,10 @@ import { Colors } from "@/constants/Colors"
 import { BANNER_TYPE, WishInfo } from "@/types/types"
 import { Link } from "expo-router"
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons"
+
+/**
+ * Component that displays banner information
+ */
 const BannerInfo = <T extends BANNER_TYPE>(props: {
     banner: T
     data: WishInfo[T]
@@ -171,6 +175,9 @@ const BannerInfo = <T extends BANNER_TYPE>(props: {
     )
 }
 
+/**
+ * Genshin Account wrapper
+ */
 export default function GameAccount(props: { resource: ResourceType }) {
     const res = props.resource.read()
     const data = res?.data

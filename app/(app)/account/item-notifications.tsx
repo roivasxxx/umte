@@ -26,6 +26,10 @@ type ItemState = {
     type: string
 }
 
+/**
+ * Item notifications screen
+ * No pagination is implemented, because there are not that many elements that would need to be rendered
+ */
 export default function ItemNotifications() {
     const { account, setNotifications } = useAccount()
     const [items, setItems] = useState<ItemState[]>([])

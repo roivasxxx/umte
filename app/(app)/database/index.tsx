@@ -14,7 +14,10 @@ import {
     View,
 } from "react-native"
 
-// render all items here
+/**
+ * All characters list screen
+ * No pagination is implemented, because there are not that many elements that would need to be rendered
+ */
 export default function Index() {
     const [items, setItems] = useState<GenshinCharacter[]>([])
     const [filterOptions, setFilterOptions] = useState<{
