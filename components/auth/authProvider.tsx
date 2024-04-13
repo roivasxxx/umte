@@ -3,6 +3,8 @@ import * as SecureStore from "expo-secure-store"
 import cmsRequest from "@/utils/fetchUtils"
 import { router } from "expo-router"
 import { AxiosError, isAxiosError } from "axios"
+import SpinningLogo from "../spinningLogo"
+import { View } from "react-native"
 
 // we do not really need the data, instead we just need something to differentiate a logged in vs logged out user
 // so we just store something about the user in the session
@@ -28,13 +30,15 @@ const AuthContext = React.createContext<{
     ) => Promise<void> | null
     session: User | null
     loading: boolean
+    isInitialized: boolean
 }>({
     signIn: () => null,
     signOut: () => null,
     signUp: () => null,
     forgotPassword: () => null,
     session: null,
-    loading: true,
+    loading: false,
+    isInitialized: false,
 })
 
 /**
@@ -58,8 +62,8 @@ export function useSession() {
  */
 export function SessionProvider(props: React.PropsWithChildren) {
     const [session, setSession] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
-
+    const [loading, setLoading] = useState(false)
+    const [isInitialized, setIsInitialized] = useState(false)
     /**
      * Resets session state, resets token, and navigates to login
      * */
@@ -101,7 +105,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                     resetSession()
                 }
             }
-            setLoading(false)
+            setIsInitialized(true)
         }
         getToken()
     }, [])
@@ -198,6 +202,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
                 },
                 loading,
                 session,
+                isInitialized,
             }}
         >
             {props.children}

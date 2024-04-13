@@ -6,6 +6,10 @@
         "icon": "./assets/images/icon.png",
         "scheme": "electromains",
         "userInterfaceStyle": "automatic",
+        "notification": {
+            "icon": "./assets/images/notification-icon.png",
+            "color": "#1e1f22"
+        },
         "splash": {
             "image": "./assets/images/splash.png",
             "resizeMode": "contain",
@@ -22,7 +26,10 @@
                 "backgroundColor": "#1e1f22"
             },
             "googleServicesFile": "./google-services.json",
-            "package": "com.roivasxxx.umte"
+            "package": "com.roivasxxx.umte",
+            "useNextNotificationsApi": true,
+            "enableBackgroundNotification": true,
+            "priority": "max"
         },
         "web": {
             "bundler": "metro",
@@ -42,9 +49,10 @@
                 "expo-notifications",
                 {
                     "icon": "./assets/images/notification-icon.png",
-                    "color": "#ffffff"
+                    "color": "#1e1f22"
                 }
-            ]
+            ],
+            "./iconPlugin.js"
         ],
         "experiments": {
             "typedRoutes": true

@@ -5,11 +5,28 @@ import React from "react"
 import { Text, View } from "react-native"
 import Splash from "../assets/images/splash.svg"
 import { Link } from "expo-router"
+import { useSession } from "@/components/auth/authProvider"
+import SpinningLogo from "@/components/spinningLogo"
 
 /**
  * Login screen
  */
 export default function App() {
+    const { isInitialized } = useSession()
+    if (!isInitialized) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <SpinningLogo />
+            </View>
+        )
+    }
+
     return (
         <View
             style={[
