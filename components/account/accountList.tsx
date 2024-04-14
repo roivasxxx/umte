@@ -109,7 +109,8 @@ export default function AccountList() {
                         <Text
                             style={{
                                 color: Colors.textSecondary,
-                                fontSize: 18,
+                                fontWeight: "bold",
+                                fontSize: 20,
                             }}
                         >
                             {"No Accounts :("}

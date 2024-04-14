@@ -212,7 +212,15 @@ export default function Index() {
                                     paddingVertical: 5,
                                 }}
                                 ListEmptyComponent={() => (
-                                    <Text>{"No elements found :("}</Text>
+                                    <Text
+                                        style={{
+                                            color: Colors.textSecondary,
+                                            fontWeight: "bold",
+                                            fontSize: 20,
+                                        }}
+                                    >
+                                        {"No elements found :("}
+                                    </Text>
                                 )}
                             />
                         )}
@@ -318,9 +326,9 @@ export default function Index() {
                         ) : (
                             <Text
                                 style={{
-                                    color: Colors.text,
-                                    fontSize: 20,
+                                    color: Colors.textSecondary,
                                     fontWeight: "bold",
+                                    fontSize: 20,
                                 }}
                             >
                                 {"No characters found :("}

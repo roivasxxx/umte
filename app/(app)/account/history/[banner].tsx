@@ -214,7 +214,15 @@ export default function History() {
                         <></>
                     ) : (
                         <View>
-                            <Text>{"No history :("}</Text>
+                            <Text
+                                style={{
+                                    color: Colors.textSecondary,
+                                    fontWeight: "bold",
+                                    fontSize: 20,
+                                }}
+                            >
+                                {"No history :("}
+                            </Text>
                         </View>
                     )
                 }}

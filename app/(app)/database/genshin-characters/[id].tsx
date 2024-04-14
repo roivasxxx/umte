@@ -102,7 +102,9 @@ const CharacterDetail = (props: { resource: ResourceType }) => {
                         <View>
                             <Text style={styles.propText}>Weapon Type</Text>
                             <Text style={styles.propTextSecondary}>
-                                {capitalizeString(character.weaponType)}
+                                {capitalizeString(
+                                    character?.weaponType || "sword"
+                                )}
                             </Text>
                         </View>
                         <View>
